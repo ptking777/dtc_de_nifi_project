@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  nifi:
+    cap_add:
+      - NET_ADMIN # low port bindings
+    image: apache/nifi
+    container_name: nifi
+    environment:
+      - SINGLE_USER_CREDENTIALS_USERNAME=${SINGLE_USER_CREDENTIALS_USERNAME}
+      - SINGLE_USER_CREDENTIALS_PASSWORD=${SINGLE_USER_CREDENTIALS_PASSWORD}
+    ports:
+      - "8080:8080/tcp" # HTTP interface
+      - "8443:8443/tcp" # HTTPS interface
+      - "514:514/tcp" # Syslog
+      - "514:514/udp" # Syslog
+      - "2055:2055/udp" # NetFlow
+    volumes:
+      - /home/ptking777/dtc_de_nifi_project/data:/opt/nifi/data
+      - ${GOOGLE_APPLICATION_CREDENTIALS}:/opt/nifi/.google/credentials/google_credentials.json
+      - /opt/nifi/drivers:/opt/nifi/nifi-current/drivers
+      - /opt/nifi/certs:/opt/certs
+      - nifi-conf:/opt/nifi/nifi-current/conf
+    restart: unless-stopped
+
+volumes:
+  nifi-conf:
+

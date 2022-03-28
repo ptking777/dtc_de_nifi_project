@@ -1,0 +1,19 @@
+{"locality": "Brandon, UK", "latitude": "52.41", "longitude": "0.56"}
+{"locality": "Reykjanesb\u00e6r, Iceland", "latitude": "63.98", "longitude": "-22.59"}
+{"locality": "Reykjanesb\u00e6r, Iceland", "latitude": "63.98", "longitude": "-22.61"}
+{"locality": "Njardhvikur, Iceland", "latitude": "63.97", "longitude": "-22.6"}
+{"locality": "Njardhvikur, Iceland", "latitude": "63.96", "longitude": "-22.59"}
+{"locality": "Bury Saint Edmunds, UK", "latitude": "52.37", "longitude": "0.48"}
+{"locality": "Aberdeen, UK", "latitude": "57.2", "longitude": "-2.22"}
+{"locality": "Aberdeen, UK", "latitude": "57.2", "longitude": "-2.2"}
+{"locality": "Bury Saint Edmunds, UK", "latitude": "52.36", "longitude": "0.48"}
+{"locality": "Bury Saint Edmunds, UK", "latitude": "52.36", "longitude": "0.49"}
+{"locality": "Aberdeen, UK", "latitude": "57.19", "longitude": "-2.21"}
+{"locality": "Ramsgate, UK", "latitude": "51.35", "longitude": "1.35"}
+{"locality": "Ramsgate, UK", "latitude": "51.35", "longitude": "1.33"}
+{"locality": "Ramsgate, UK", "latitude": "51.35", "longitude": "1.34"}
+{"locality": "Dublin Airport, County Dublin, Ireland", "latitude": "53.43", "longitude": "-6.25"}
+{"locality": "Ramsgate, UK", "latitude": "51.34", "longitude": "1.34"}
+{"locality": "Brandon, UK", "latitude": "52.42", "longitude": "0.57"}
+{"locality": "Dublin, County Dublin, Ireland", "latitude": "53.42", "longitude": "-6.25"}
+{"locality": "Dublin, County Dublin, Ireland", "latitude": "53.42", "longitude": "-6.27"}
