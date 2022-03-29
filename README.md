@@ -1,5 +1,5 @@
 # dtc_de_nifi_project
-DTC DE Zoom Camp Project : Nifi ETL Processor
+DTC DE Zoom Camp Project : NiFi ETL Processor
 
 In this project we will be using Apache NiFi to download the data from the NOAA site.
 
@@ -44,17 +44,41 @@ git clone git@github.com:ptking777/dtc_de_nifi_project.git
 cd dtc_de_nifi_project
 </pre>
 <p>
-Launch Apache Nifi by executint: <i>docker-compose up -d</i>. The NiFi application should now be runnning on port 8443.
-We will need to setup port forwarding to facilitate access. In another terminal, execute the following.
+Examine the <a href="https://github.com/ptking777/dtc_de_nifi_project/blob/main/docker-compose.yml">docker-compose</a> file.
+Update <USER> to the user ID on ETL server.
+Ensure that SINGLE_USER_CREDENTIALS_USERNAME is set to your desired NiFi user name in .bashrc.
+Ensure that SINGLE_USER_CREDENTIALS_PASSWORD is set to your desired NiFi password in .bashrc.
+Additionally, ensure that GOOGLE_APPLICATION_CREDENTIALS has been setup correctly in .bashrc
+<p>
+Launch Apache Nifi by executing: 
+<pre>docker-compose up -d</pre>
+After a couple minutes, the NiFi application should be runnning on port 8443.
+We will need to setup port forwarding to facilitate access on my-etl-server. In another terminal on your home computer, execute the following:
 <pre>
 gcloud compute  ssh --ssh-flag="-L 8443:localhost:8443"  --zone "us-central1-c" my-etl-server
 </pre>
-You should now be able to access the NiFi using your browser at the following address: <i>https://localhost:8443/nifi<i>.
-You will need to enter the userID/password you created above.
+You should now be able to access the NiFi application by pointing your browser to the address: <i>https://localhost:8443/nifi<i>.
+You will need to enter the NiFi userID/password you created above. You will need to by-pass the security <a href="https://github.com/ptking777/dtc-de-project/blob/main/images/security_risk_ahead.png">alert</a>.
 <p>
-Note: The NiFi controller services will need to be enabled before running the transformation.
 
 For a quick introduction to Apachi Nifi, please see the tutorial <a href="https://youtu.be/VVnFt54jUQ8">Apache NiFi Tutorial - Complete Guide (Part 1) - Course Introduction</a> on YouTube.
+<p>
+Load the NiFI Flow Definition <a href="https://github.com/ptking777/dtc_de_nifi_project/blob/main/noaa_isd_flows.json">noaa_isd_flows.json</a> into a process group on the NiFi workspace.
+<br>
+Note: The NiFi controller services will need to be enabled before running the transformation.
+The <a href="https://github.com/ptking777/dtc-de-project/blob/main/images/controller_services.png">Control Services</a> need to be enabled after the definition is loaded.
+<br>
+NiFi Snapshots
+<ul>
+<li>
+<a href="https://github.com/ptking777/dtc-de-project/blob/main/images/nifi-top-level.png">Top Level Process Group</a> 
+</li><li>
+<a href="https://github.com/ptking777/dtc-de-project/blob/main/images/parallel_process_group_flow.png">Parallel Sub-Process Groups</a>
+</li><li>
+<a href="https://github.com/ptking777/dtc-de-project/blob/main/images/nifi-data-flow.png">Flow Diagram for Process Group</a>
+</li>
+</ul>
+
 
 
 
