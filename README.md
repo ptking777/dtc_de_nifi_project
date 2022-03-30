@@ -84,27 +84,49 @@ The <a href="https://github.com/ptking777/dtc-de-project/blob/main/images/contro
 Once the NiFi ETL process has completed, the NOAA ISD data will be available in the Google Cloud Storage bucket.
 In order to convert the latitude/longitude values available from the NOAA data to an actual location, we need to extract the data as follows. 
 <h3>Get the list of latitudes and longitude from the dataset</h3>
-Execute the following in the BiqQuery workspace.
-<pre>
-CREATE OR REPLACE TABLE  noaa_isd_analytics.obs_lat_long
-AS
-SELECT
-cat_id,
-wban,
-obs_latitude,
-obs_longitude
-FROM `noaa_isd_analytics.observations`
-GROUP BY obs_latitude, obs_longitude
-</pre>
+Assuming that the <a>NOAA DBT Project</a> has been setup, based on the sources the staging tables (views) stg_obs_lat_long and stg_observations can be generated.
 
+The latitude and longitude data in stg_obs_lat_long will be copied to GCS and eventually downloaded to the ETL server.
 
-Note that the <BUCKET> needs to be set.
+Note that the <BUCKET> needs to be set. 
 <pre>
 bq extract \
 --destination_format='CSV' --field_delimiter="|" \
-'<PROJECT>:<DATASET>.<OBS_LAT_LONG_TABLE'  \
-gs://<BUCKET>/obs_lat_long.csv
+'<PROJECT>:noaa_isd_analytics.stg_obs_lat_long'  \
+gs://<BUCKET>/stg_obs_lat_long.csv
 </pre>
+Dowload the stg_obs_lat_long.csv file to the the ETL server.
+<pre>
+cd geo-code-api
+gsutil cp gs://<BUCKET>/stg_obs_lat_long.csv ./
+</pre>
+Lookup the location (nearest town) of the weather stations based on latitude and longitude using the Goolge Maps API.
+<pre>
+./geo-code-api.py ./stg_obs_lat_long.csv
+</pre>
+Copy the JSON file output.txt of the geocoding to GCS.
+<pre>
+gsutil cp ./output.txt gs://<BUCKET>/output.txt
+</pre>
+In the BiqQuery console execute the following:
+<pre>
+CREATE OR REPLACE EXTERNAL TABLE noaa_isd_analytics.locality_lookup (
+locality	STRING,	
+latitude	FLOAT64,	
+longitude	FLOAT64	
+)
+OPTIONS (
+  description = 'NOAA Integrated Sensory Data',
+  format = 'JSON',
+  uris = ['gs://dtc_de_data_lake_ptk/output.txt']
+);
+</pre>
+The DBT source 'locality_lookup' in the <a href="https://github.com/ptking777/dbt_noaa_zoom">DBT Project<a> should now available.
+<p>
+
+
+
+
 
 <h2>DBT Analysis</h2>
 The <a href="https://github.com/ptking777/dbt_noaa_zoom">DBT application</a> will be launched to generate the staging, dimension and fact tables.
