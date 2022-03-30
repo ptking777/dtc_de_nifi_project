@@ -50,9 +50,10 @@ Ensure that SINGLE_USER_CREDENTIALS_USERNAME is set to your desired NiFi user na
 Ensure that SINGLE_USER_CREDENTIALS_PASSWORD is set to your desired NiFi password in .bashrc.
 Additionally, ensure that GOOGLE_APPLICATION_CREDENTIALS has been setup correctly in .bashrc
 <p>
-Launch Apache Nifi by executing: 
+<h2>Launch Apache Nifi by executing:</h2>
 <pre>docker-compose up -d</pre>
-After a couple minutes, the NiFi application should be runnning on port 8443.
+<p>
+After a few minutes, the NiFi application should be available on port 8443.
 We will need to setup port forwarding to facilitate access on my-etl-server. In another terminal on your home computer, execute the following:
 <pre>
 gcloud compute  ssh --ssh-flag="-L 8443:localhost:8443"  --zone "us-central1-c" my-etl-server
@@ -68,7 +69,7 @@ Load the NiFI Flow Definition <a href="https://github.com/ptking777/dtc_de_nifi_
 Note: The NiFi controller services will need to be enabled before running the transformation.
 The <a href="https://github.com/ptking777/dtc-de-project/blob/main/images/controller_services.png">Control Services</a> need to be enabled after the definition is loaded.
 <br>
-NiFi Snapshots
+<h2>NiFi Snapshots</h2>
 <ul>
 <li>
 <a href="https://github.com/ptking777/dtc-de-project/blob/main/images/nifi-top-level.png">Top Level Process Group</a> 
@@ -78,6 +79,36 @@ NiFi Snapshots
 <a href="https://github.com/ptking777/dtc-de-project/blob/main/images/nifi-data-flow.png">Flow Diagram for Process Group</a>
 </li>
 </ul>
+<p>
+<h2>Latitude/Longitude GeoCoding</h2>
+Once the NiFi ETL process has completed, the NOAA ISD data will be available in the Google Cloud Storage bucket.
+In order to convert the latitude/longitude values available from the NOAA data to an actual location, we need to extract the data as follows. 
+<h3>Get the list of latitudes and longitude from the dataset</h3>
+Execute the following in the BiqQuery workspace.
+<pre>
+CREATE OR REPLACE TABLE  noaa_isd_analytics.obs_lat_long
+AS
+SELECT
+cat_id,
+wban,
+obs_latitude,
+obs_longitude
+FROM `noaa_isd_analytics.observations`
+GROUP BY obs_latitude, obs_longitude
+</pre>
+
+
+Note that the <BUCKET> needs to be set.
+<pre>
+bq extract \
+--destination_format='CSV' --field_delimiter="|" \
+'<PROJECT>:<DATASET>.<OBS_LAT_LONG_TABLE'  \
+gs://<BUCKET>/obs_lat_long.csv
+</pre>
+
+<h2>DBT Analysis</h2>
+The <a href="https://github.com/ptking777/dbt_noaa_zoom">DBT application</a> will be launched to generate the staging, dimension and fact tables.
+
 
 
 
